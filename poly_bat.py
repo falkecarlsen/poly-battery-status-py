@@ -114,8 +114,19 @@ def calc_percentage(batteries: list) -> float:
     return total_current_charge / total_max_charge
 
 
-def calc_display_time() -> str:
-    pass
+def calc_display_time(status: Status, seconds: int) -> str:
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) / 60)
+    if status == Status.PASSIVE:
+        return ""
+
+    # assume charging initially if not passive
+    direction = "+"
+    if status == Status.DISCHARGING:
+        direction = "-"
+
+    # format output digitally, e.g. (+0:09)
+    return f" ({direction}{hours}:{minutes:02})"
 
 
 def print_status(config: Configuration):
@@ -125,6 +136,7 @@ def print_status(config: Configuration):
 def main():
     config = get_configuration()
     pprint(config)
+    print(calc_display_time(config.status, config.time_to_completion))
 
 
 if __name__ == '__main__':
