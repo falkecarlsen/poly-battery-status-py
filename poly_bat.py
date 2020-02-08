@@ -1,4 +1,5 @@
 import re
+import sys
 from enum import Enum
 from pathlib import Path
 
@@ -6,10 +7,19 @@ PSEUDO_FS_PATH = "/sys/class/power_supply/"
 CURRENT_CHARGE_FILENAME = "energy_now"
 MAX_CHARGE_FILENAME = "energy_full"
 POWER_DRAW_FILENAME = "power_now"
-TLP_THRESHOLD_PERCENTAGE = 0.8
+TLP_THRESHOLD_PERCENTAGE = 1.0
+PERCENTAGE_FORMAT = ".2%"
 
+if len(sys.argv) > 1:
+    # parsing threshold
+    try:
+        TLP_THRESHOLD_PERCENTAGE = float(sys.argv[1])
+    except ValueError:
+        print(f"[ERROR]: Could not convert '{sys.argv[1]}' into a float.")
+    if len(sys.argv) > 2:
+        # parsing formatting
+        PERCENTAGE_FORMAT = sys.argv[2]
 
-# todo: parse args for percentage and formatting
 
 class Status(Enum):
     CHARGING = 1
@@ -128,12 +138,11 @@ def calc_display_time(status: Status, seconds: int) -> str:
 
 
 def print_status(config: Configuration):
-    print(f"{config.percentage:.2%}{calc_display_time(config.status, config.time_to_completion)}")
+    print(f"{config.percentage:{PERCENTAGE_FORMAT}}{calc_display_time(config.status, config.time_to_completion)}")
 
 
 def main():
-    config = get_configuration()
-    print_status(config)
+    print_status(get_configuration())
 
 
 if __name__ == '__main__':
