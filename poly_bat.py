@@ -1,5 +1,5 @@
 """
-<one line to give the program's name and a brief idea of what it does.>
+poly-battery-status-py: Generates a pretty status-bar string for multi-battery systems on Linux.
 Copyright (C) 2020  Falke Carlsen
 
 This program is free software: you can redistribute it and/or modify
