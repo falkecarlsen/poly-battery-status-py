@@ -1,7 +1,6 @@
 import re
 from enum import Enum
 from pathlib import Path
-from pprint import pprint
 
 PSEUDO_FS_PATH = "/sys/class/power_supply/"
 CURRENT_CHARGE_FILENAME = "energy_now"
@@ -9,6 +8,8 @@ MAX_CHARGE_FILENAME = "energy_full"
 POWER_DRAW_FILENAME = "power_now"
 TLP_THRESHOLD_PERCENTAGE = 0.8
 
+
+# todo: parse args for percentage and formatting
 
 class Status(Enum):
     CHARGING = 1
@@ -46,7 +47,6 @@ def get_configuration() -> Configuration:
     for x in Path(PSEUDO_FS_PATH).iterdir():
         bat_name = str(x.parts[len(x.parts) - 1])
         if re.match("^BAT\d+$", bat_name):
-            print(bat_name)
             batteries.append(Battery(
                 get_status(bat_name),
                 get_current_charge(bat_name),
@@ -69,7 +69,6 @@ def get_configuration() -> Configuration:
 
 def get_status(bat_name: str) -> Status:
     raw_status = Path(f"{PSEUDO_FS_PATH}{bat_name}/status").open().read().strip()
-    print(raw_status)
     if raw_status == "Unknown" or raw_status == "Full":
         return Status.PASSIVE
     elif raw_status == "Charging":
@@ -99,7 +98,6 @@ def calc_time(batteries: list, status: Status) -> int:
     total_current_charge = sum([bat.current_charge for bat in batteries])
     total_max_charge = sum([bat.max_charge for bat in batteries])
     total_power_draw = sum([bat.power_draw for bat in batteries])
-    print_status(total_current_charge)
     if status == Status.DISCHARGING:
         # return number of seconds until empty
         return (total_current_charge / total_power_draw) * 3600
@@ -130,13 +128,12 @@ def calc_display_time(status: Status, seconds: int) -> str:
 
 
 def print_status(config: Configuration):
-    pass
+    print(f"{config.percentage:.2%}{calc_display_time(config.status, config.time_to_completion)}")
 
 
 def main():
     config = get_configuration()
-    pprint(config)
-    print(calc_display_time(config.status, config.time_to_completion))
+    print_status(config)
 
 
 if __name__ == '__main__':
