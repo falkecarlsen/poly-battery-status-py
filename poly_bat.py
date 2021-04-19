@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 poly-battery-status-py: Generates a pretty status-bar string for multi-battery systems on Linux.
 Copyright (C) 2020  Falke Carlsen

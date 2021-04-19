@@ -1,7 +1,7 @@
 # poly-battery-status-py
 Generates a pretty status-bar string for multi-battery systems on Linux. A port of [cogitantium/poly-battery-status](https://github.com/cogitantium/poly-battery-status).
 
-To be upstreamed through AUR on [i3blocks-contrib](https://github.com/vivien/i3blocks-contrib).
+Upstreamed through AUR on [i3blocks-contrib](https://github.com/vivien/i3blocks-contrib).
 
 ## Features
 - Uses sysfs for gathering batteries and values on these
